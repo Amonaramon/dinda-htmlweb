@@ -1,0 +1,1420 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Absensi Siswa - Kelas XII IPA</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --secondary: #3f37c9;
+            --success: #4cc9f0;
+            --warning: #f72585;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+            --light-gray: #e9ecef;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fb;
+            color: var(--dark);
+            padding-bottom: 40px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 25px 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border-radius: 0 0 15px 15px;
+            margin-bottom: 30px;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .logo i {
+            font-size: 2.5rem;
+            background-color: rgba(255, 255, 255, 0.2);
+            padding: 15px;
+            border-radius: 50%;
+        }
+        
+        .logo-text h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+        
+        .logo-text p {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+        
+        .date-info {
+            background-color: rgba(255, 255, 255, 0.15);
+            padding: 12px 25px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        
+        .date-info h2 {
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+        }
+        
+        .date-info p {
+            font-size: 0.9rem;
+        }
+        
+        .tabs {
+            display: flex;
+            background-color: white;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+        
+        .tab {
+            flex: 1;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+            border-bottom: 3px solid transparent;
+        }
+        
+        .tab:hover {
+            background-color: var(--light-gray);
+        }
+        
+        .tab.active {
+            color: var(--primary);
+            border-bottom: 3px solid var(--primary);
+            background-color: rgba(67, 97, 238, 0.05);
+        }
+        
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .card {
+            background-color: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            border-left: 5px solid var(--primary);
+        }
+        
+        .card-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            color: var(--primary);
+            font-size: 1.4rem;
+        }
+        
+        .card-title i {
+            font-size: 1.6rem;
+        }
+        
+        .schedule-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .schedule-item {
+            background-color: var(--light);
+            border-radius: 10px;
+            padding: 18px;
+            border-left: 4px solid var(--success);
+            transition: all 0.3s;
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .schedule-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .schedule-item.active-schedule {
+            background-color: rgba(67, 97, 238, 0.1);
+            border-left: 4px solid var(--primary);
+        }
+        
+        .schedule-item.clickable::after {
+            content: "Klik untuk detail";
+            position: absolute;
+            bottom: 10px;
+            right: 15px;
+            font-size: 0.75rem;
+            color: var(--primary);
+            opacity: 0.8;
+        }
+        
+        .schedule-time {
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .schedule-subject {
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+        }
+        
+        .schedule-teacher {
+            color: var(--gray);
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .attendance-controls {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+        
+        .control-btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--secondary);
+        }
+        
+        .btn-success {
+            background-color: var(--success);
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background-color: #3ab4d9;
+        }
+        
+        .btn-warning {
+            background-color: var(--warning);
+            color: white;
+        }
+        
+        .btn-warning:hover {
+            background-color: #e11574;
+        }
+        
+        .btn-light {
+            background-color: var(--light-gray);
+            color: var(--dark);
+        }
+        
+        .btn-light:hover {
+            background-color: #d8dbe0;
+        }
+        
+        .students-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .student-card {
+            background-color: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+        
+        .student-card:hover {
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.08);
+        }
+        
+        .student-card.present {
+            border-color: var(--success);
+        }
+        
+        .student-card.absent {
+            border-color: var(--warning);
+        }
+        
+        .student-card.late {
+            border-color: #ffb300;
+        }
+        
+        .student-number {
+            display: inline-block;
+            background-color: var(--primary);
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        .student-name {
+            font-weight: 600;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+            height: 60px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .attendance-options {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .attendance-btn {
+            flex: 1;
+            padding: 8px 5px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 0.8rem;
+            transition: all 0.2s;
+        }
+        
+        .present-btn {
+            background-color: rgba(76, 201, 240, 0.2);
+            color: #0a8ab3;
+        }
+        
+        .present-btn:hover, .present-btn.active {
+            background-color: var(--success);
+            color: white;
+        }
+        
+        .absent-btn {
+            background-color: rgba(247, 37, 133, 0.2);
+            color: #c2185b;
+        }
+        
+        .absent-btn:hover, .absent-btn.active {
+            background-color: var(--warning);
+            color: white;
+        }
+        
+        .late-btn {
+            background-color: rgba(255, 179, 0, 0.2);
+            color: #b28700;
+        }
+        
+        .late-btn:hover, .late-btn.active {
+            background-color: #ffb300;
+            color: white;
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background-color: white;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        
+        .stat-present { color: var(--success); }
+        .stat-absent { color: var(--warning); }
+        .stat-late { color: #ffb300; }
+        .stat-total { color: var(--primary); }
+        
+        .stat-label {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+        
+        .stat-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            opacity: 0.8;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            color: var(--gray);
+            font-size: 0.9rem;
+            padding-top: 20px;
+            border-top: 1px solid var(--light-gray);
+        }
+        
+        .current-subject {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(67, 97, 238, 0.3);
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background-color: white;
+            border-radius: 15px;
+            padding: 30px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            animation: modalFadeIn 0.3s;
+        }
+        
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--light-gray);
+        }
+        
+        .modal-title {
+            color: var(--primary);
+            font-size: 1.4rem;
+            font-weight: 600;
+        }
+        
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--gray);
+            transition: color 0.2s;
+        }
+        
+        .close-modal:hover {
+            color: var(--warning);
+        }
+        
+        .schedule-detail-item {
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px dashed var(--light-gray);
+        }
+        
+        .schedule-detail-label {
+            font-weight: 600;
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+        
+        .schedule-detail-value {
+            font-size: 1.1rem;
+            margin-top: 5px;
+        }
+        
+        .quick-nav {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .nav-btn {
+            padding: 10px 20px;
+            background-color: var(--light-gray);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        
+        .nav-btn:hover {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .nav-btn.active {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .day-schedule {
+            display: none;
+        }
+        
+        .day-schedule.active {
+            display: block;
+        }
+        
+        .empty-schedule {
+            text-align: center;
+            padding: 40px;
+            color: var(--gray);
+            font-style: italic;
+        }
+        
+        .search-box {
+            margin-bottom: 20px;
+            position: relative;
+        }
+        
+        .search-box input {
+            width: 100%;
+            padding: 12px 20px;
+            padding-left: 45px;
+            border: 2px solid var(--light-gray);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+        
+        .search-box input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
+        }
+        
+        .search-box i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray);
+        }
+        
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .tabs {
+                flex-wrap: wrap;
+            }
+            
+            .tab {
+                min-width: 120px;
+            }
+            
+            .attendance-controls {
+                justify-content: center;
+            }
+            
+            .students-grid {
+                grid-template-columns: repeat(auto-fill, minmax(100%, 1fr));
+            }
+            
+            .schedule-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .student-name {
+                height: auto;
+                min-height: 60px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-user-check"></i>
+                    <div class="logo-text">
+                        <h1>Absensi Siswa</h1>
+                        <p>Kelas XII IPA - Total 37 Siswa</p>
+                    </div>
+                </div>
+                <div class="date-info">
+                    <h2 id="current-day">Senin</h2>
+                    <p id="current-date">1 Januari 2023</p>
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class="tabs">
+            <div class="tab active" data-tab="attendance">Absensi Harian</div>
+            <div class="tab" data-tab="schedule">Jadwal Pelajaran</div>
+            <div class="tab" data-tab="stats">Statistik</div>
+            <div class="tab" data-tab="teachers">Data Pengajar</div>
+        </div>
+        
+        <!-- Tab: Absensi Harian -->
+        <div class="tab-content active" id="attendance-tab">
+            <div class="current-subject">
+                <div>
+                    <h3 id="current-subject-name">Pilih Mata Pelajaran</h3>
+                    <p id="current-teacher-name">Klik jadwal untuk memilih</p>
+                </div>
+                <div id="current-time"></div>
+            </div>
+            
+            <div class="card">
+                <div class="card-title">
+                    <i class="fas fa-users"></i>
+                    <h3>Daftar Siswa (37 Siswa)</h3>
+                </div>
+                
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="search-student" placeholder="Cari siswa berdasarkan nama...">
+                </div>
+                
+                <div class="attendance-controls">
+                    <button class="control-btn btn-primary" id="mark-all-present">
+                        <i class="fas fa-check-circle"></i> Tandai Semua Hadir
+                    </button>
+                    <button class="control-btn btn-warning" id="mark-all-absent">
+                        <i class="fas fa-times-circle"></i> Tandai Semua Tidak Hadir
+                    </button>
+                    <button class="control-btn btn-success" id="save-attendance">
+                        <i class="fas fa-save"></i> Simpan Absensi
+                    </button>
+                    <button class="control-btn btn-light" id="reset-attendance">
+                        <i class="fas fa-redo"></i> Reset
+                    </button>
+                    <button class="control-btn btn-light" id="quick-schedule">
+                        <i class="fas fa-clock"></i> Lihat Jadwal
+                    </button>
+                </div>
+                
+                <div class="students-grid" id="students-list">
+                    <!-- Student cards will be generated here by JavaScript -->
+                </div>
+            </div>
+        </div>
+        
+        <!-- Tab: Jadwal Pelajaran -->
+        <div class="tab-content" id="schedule-tab">
+            <div class="card">
+                <div class="card-title">
+                    <i class="fas fa-calendar-alt"></i>
+                    <h3>Jadwal Pelajaran</h3>
+                </div>
+                
+                <div class="quick-nav">
+                    <button class="nav-btn active" data-day="senin">Senin</button>
+                    <button class="nav-btn" data-day="selasa">Selasa</button>
+                    <button class="nav-btn" data-day="rabu">Rabu</button>
+                    <button class="nav-btn" data-day="kamis">Kamis</button>
+                    <button class="nav-btn" data-day="jumat">Jumat</button>
+                </div>
+                
+                <div id="senin-schedule" class="day-schedule active">
+                    <div class="schedule-grid">
+                        <!-- Senin schedule will be generated here -->
+                    </div>
+                </div>
+                <div id="selasa-schedule" class="day-schedule">
+                    <div class="schedule-grid">
+                        <!-- Selasa schedule will be generated here -->
+                    </div>
+                </div>
+                <div id="rabu-schedule" class="day-schedule">
+                    <div class="schedule-grid">
+                        <!-- Rabu schedule will be generated here -->
+                    </div>
+                </div>
+                <div id="kamis-schedule" class="day-schedule">
+                    <div class="schedule-grid">
+                        <!-- Kamis schedule will be generated here -->
+                    </div>
+                </div>
+                <div id="jumat-schedule" class="day-schedule">
+                    <div class="schedule-grid">
+                        <!-- Jumat schedule will be generated here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Tab: Statistik -->
+        <div class="tab-content" id="stats-tab">
+            <div class="card">
+                <div class="card-title">
+                    <i class="fas fa-chart-bar"></i>
+                    <h3>Statistik Absensi</h3>
+                </div>
+                
+                <div class="stats">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-user-check stat-present"></i>
+                        </div>
+                        <div class="stat-value stat-present" id="present-count">0</div>
+                        <div class="stat-label">Hadir</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-user-times stat-absent"></i>
+                        </div>
+                        <div class="stat-value stat-absent" id="absent-count">0</div>
+                        <div class="stat-label">Tidak Hadir</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-clock stat-late"></i>
+                        </div>
+                        <div class="stat-value stat-late" id="late-count">0</div>
+                        <div class="stat-label">Terlambat</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-users stat-total"></i>
+                        </div>
+                        <div class="stat-value stat-total">37</div>
+                        <div class="stat-label">Total Siswa</div>
+                    </div>
+                </div>
+                
+                <div id="attendance-history">
+                    <h4 style="margin-bottom: 15px; color: var(--primary);">Riwayat Absensi Hari Ini</h4>
+                    <div style="background-color: var(--light); padding: 15px; border-radius: 8px;">
+                        <p id="history-text">Belum ada data absensi yang disimpan hari ini.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Tab: Data Pengajar -->
+        <div class="tab-content" id="teachers-tab">
+            <div class="card">
+                <div class="card-title">
+                    <i class="fas fa-chalkboard-teacher"></i>
+                    <h3>Data Pengajar</h3>
+                </div>
+                
+                <div class="teachers-grid" id="teachers-list">
+                    <!-- Teacher cards will be generated here -->
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal for Schedule Details -->
+    <div class="modal" id="scheduleModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modalScheduleTitle">Detail Jadwal</h3>
+                <button class="close-modal" id="closeModal">&times;</button>
+            </div>
+            <div id="modalScheduleContent">
+                <!-- Schedule details will be inserted here -->
+            </div>
+        </div>
+    </div>
+    
+    <footer class="container">
+        <p>Sistem Absensi Siswa &copy; 2023 - Kelas XII IPA</p>
+        <p>Total 37 Siswa | Dibuat dengan <i class="fas fa-heart" style="color: var(--warning);"></i> untuk kemudahan pengelolaan absensi</p>
+    </footer>
+
+    <script>
+        // Data siswa dengan nama lengkap
+        const students = [
+            { id: 1, name: "Aafraah Syifaa Rahmadani", attendance: null },
+            { id: 2, name: "Adinda Rizky Wardana", attendance: null },
+            { id: 3, name: "Afiqah Dwi Syabila", attendance: null },
+            { id: 4, name: "Annisa Siti Nuhafizhah Dinda", attendance: null },
+            { id: 5, name: "Ara Azmi Jamaica", attendance: null },
+            { id: 6, name: "Ariiqah Kynera Ryesha", attendance: null },
+            { id: 7, name: "Aulia Nur Hidayat", attendance: null },
+            { id: 8, name: "Aurel Syafa B.", attendance: null },
+            { id: 9, name: "Ayla Resha", attendance: null },
+            { id: 10, name: "Cindy Shalshabilla Hadi Putri", attendance: null },
+            { id: 11, name: "Defani Haizah Anafah", attendance: null },
+            { id: 12, name: "Ely Amelia Yanti", attendance: null },
+            { id: 13, name: "Faiz Satya Alana Putra Susanto", attendance: null },
+            { id: 14, name: "Gusti Fadhlan Haidar Alhasfani", attendance: null },
+            { id: 15, name: "Hasriani Aulia Putri", attendance: null },
+            { id: 16, name: "Huzna", attendance: null },
+            { id: 17, name: "Karissa Nuril Apriyanti", attendance: null },
+            { id: 18, name: "Kayla Disty Nawirda", attendance: null },
+            { id: 19, name: "Meiriany Aura Sutianto", attendance: null },
+            { id: 20, name: "Moza Nabila", attendance: null },
+            { id: 21, name: "Muhammad Nur Arfan", attendance: null },
+            { id: 22, name: "Muhammad Suriansyah", attendance: null },
+            { id: 23, name: "Naila Athaya Rahima Putri", attendance: null },
+            { id: 24, name: "Nayaka Nala Prandani", attendance: null },
+            { id: 25, name: "Nazarotul Mufidah", attendance: null },
+            { id: 26, name: "Nizar Khozin Rofi'l", attendance: null },
+            { id: 27, name: "Nur Asmi Fadilah", attendance: null },
+            { id: 28, name: "Nur Syafina Putri Azura", attendance: null },
+            { id: 29, name: "Nur Syifa Al Husna", attendance: null },
+            { id: 30, name: "Nurhidayah Isnaini", attendance: null },
+            { id: 31, name: "Puspita Ariani", attendance: null },
+            { id: 32, name: "Rezky Anggy Pratiwi", attendance: null },
+            { id: 33, name: "Syalsiah A", attendance: null },
+            { id: 34, name: "Valincia Enata Abdahani", attendance: null },
+            { id: 35, name: "Vara Febrina Saputri", attendance: null },
+            { id: 36, name: "Rihadatul Aisy Anindira Puteri", attendance: null },
+            { id: 37, name: "Marsyah Ridha Savina", attendance: null }
+        ];
+        
+        // Data jadwal pelajaran yang sudah dikoreksi
+        const schedule = {
+            senin: [
+                { time: "07:15 - 08:00", subject: "Upacara", teacher: "" },
+                { time: "08:00 - 10:15", subject: "Matematika Lanjut", teacher: "Melly Dian Astuti" },
+                { time: "10:15 - 10:30", subject: "Istirahat", teacher: "" },
+                { time: "10:30 - 12:00", subject: "Pendidikan Agama Islam", teacher: "M.Rizal" },
+                { time: "12:00 - 12:45", subject: "Istirahat", teacher: "" },
+                { time: "12:45 - 14:15", subject: "Pendidikan Pancasila dan Kewarganegaraan", teacher: "Ridna Damayanti" },
+                { time: "14:15 - 15:45", subject: "Kimia", teacher: "Tri Sejati" }
+            ],
+            selasa: [
+                { time: "07:15 - 09:30", subject: "Matematika Wajib", teacher: "Karina Wulandari" },
+                { time: "09:30 - 10:30", subject: "Kimia", teacher: "Tri Sejati" },
+                { time: "10:30 - 12:00", subject: "Matematika Lanjut", teacher: "Melly Dian Astuti" },
+                { time: "12:00 - 12:45", subject: "Istirahat", teacher: "" },
+                { time: "12:45 - 14:15", subject: "Sejarah", teacher: "Sri Rahayu" },
+                { time: "14:15 - 15:45", subject: "PKWU", teacher: "Dewi Puspita Sari" }
+            ],
+            rabu: [
+                { time: "07:30 - 08:45", subject: "Biologi", teacher: "Sugeng Hariyadi" },
+                { time: "08:45 - 10:15", subject: "Bahasa Indonesia", teacher: "Fahmi Riadl" },
+                { time: "10:15 - 10:30", subject: "Istirahat", teacher: "" },
+                { time: "10:30 - 12:00", subject: "Kimia", teacher: "Tri Sejati" },
+                { time: "12:00 - 12:45", subject: "Istirahat", teacher: "" },
+                { time: "12:45 - 14:15", subject: "Informatika", teacher: "Mardini" },
+                { time: "14:15 - 15:45", subject: "Bahasa Inggris", teacher: "Andarias Ta'dung" }
+            ],
+            kamis: [
+                { time: "07:30 - 08:45", subject: "Biologi", teacher: "Sugeng Hariyadi" },
+                { time: "08:45 - 10:15", subject: "Bahasa Indonesia", teacher: "Fahmi Riadl" },
+                { time: "10:15 - 10:30", subject: "Istirahat", teacher: "" },
+                { time: "10:30 - 12:00", subject: "Seni Budaya", teacher: "Dewi Puspita Sari" },
+                { time: "12:00 - 12:45", subject: "Istirahat", teacher: "" },
+                { time: "12:45 - 13:30", subject: "Biologi", teacher: "Sugeng Hariyadi" },
+                { time: "13:30 - 15:45", subject: "PJOK", teacher: "Agus Sunarno" }
+            ],
+            jumat: [
+                { time: "07:15 - 08:00", subject: "Kegiatan Jum'at", teacher: "" },
+                { time: "08:00 - 10:15", subject: "Informatika", teacher: "Mardini" },
+                { time: "10:15 - 10:30", subject: "Istirahat", teacher: "" },
+                { time: "10:30 - 11:15", subject: "Pendidikan Agama Islam", teacher: "M.Rizal" },
+                { time: "11:15 - 12:00", subject: "Matematika Wajib", teacher: "Karina Wulandari" }
+            ]
+        };
+        
+        // Data pengajar
+        const teachers = [
+            { name: "Melly Dian Astuti", subject: "Matematika Lanjut" },
+            { name: "M. Rizal", subject: "Pendidikan Agama Islam" },
+            { name: "Ridna Damayanti", subject: "Pendidikan Pancasila dan Kewarganegaraan" },
+            { name: "Tri Sejati", subject: "Kimia" },
+            { name: "Karina Wulandari", subject: "Matematika Wajib" },
+            { name: "Sri Rahayu", subject: "Sejarah" },
+            { name: "Dewi Puspita Sari", subject: "PKWU, Seni Budaya" },
+            { name: "Sugeng Hariyadi", subject: "Biologi" },
+            { name: "Fahmi Riadl", subject: "Bahasa Indonesia" },
+            { name: "Mardini", subject: "Informatika" },
+            { name: "Andarias Ta'dung", subject: "Bahasa Inggris" },
+            { name: "Agus Sunarno", subject: "PJOK" }
+        ];
+        
+        // State variables
+        let currentDay = 'senin';
+        let selectedScheduleItem = null;
+        
+        // Inisialisasi aplikasi
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set tanggal dan hari
+            updateDateDisplay();
+            
+            // Generate daftar siswa
+            renderStudents();
+            
+            // Generate jadwal pelajaran
+            renderSchedule();
+            
+            // Generate data pengajar
+            renderTeachers();
+            
+            // Setup event listeners untuk tab
+            setupTabs();
+            
+            // Setup event listeners untuk kontrol absensi
+            setupAttendanceControls();
+            
+            // Setup event listeners untuk navigasi cepat jadwal
+            setupScheduleNavigation();
+            
+            // Setup modal
+            setupModal();
+            
+            // Setup search functionality
+            setupSearch();
+            
+            // Update statistik
+            updateStats();
+            
+            // Load saved attendance data
+            loadSavedAttendance();
+        });
+        
+        // Update tanggal dan hari display
+        function updateDateDisplay() {
+            const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+            const months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+            const now = new Date();
+            const dayName = days[now.getDay()];
+            const date = `${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
+            
+            document.getElementById('current-day').textContent = dayName;
+            document.getElementById('current-date').textContent = date;
+            
+            // Update currentDay based on actual day
+            const dayMap = {
+                1: 'senin', 2: 'selasa', 3: 'rabu', 4: 'kamis', 5: 'jumat', 6: 'sabtu', 0: 'minggu'
+            };
+            currentDay = dayMap[now.getDay()] || 'senin';
+            
+            // Update active nav button
+            updateActiveNavButton();
+        }
+        
+        // Render daftar siswa
+        function renderStudents(filterText = '') {
+            const studentsList = document.getElementById('students-list');
+            studentsList.innerHTML = '';
+            
+            let filteredStudents = students;
+            
+            if (filterText) {
+                const searchTerm = filterText.toLowerCase();
+                filteredStudents = students.filter(student => 
+                    student.name.toLowerCase().includes(searchTerm)
+                );
+            }
+            
+            filteredStudents.forEach(student => {
+                const studentCard = document.createElement('div');
+                studentCard.className = `student-card ${student.attendance ? student.attendance : ''}`;
+                
+                studentCard.innerHTML = `
+                    <div class="student-number">${student.id}</div>
+                    <div class="student-name">${student.name}</div>
+                    <div class="attendance-options">
+                        <button class="attendance-btn present-btn ${student.attendance === 'present' ? 'active' : ''}" 
+                                data-id="${student.id}" data-status="present">
+                            <i class="fas fa-check"></i> Hadir
+                        </button>
+                        <button class="attendance-btn absent-btn ${student.attendance === 'absent' ? 'active' : ''}" 
+                                data-id="${student.id}" data-status="absent">
+                            <i class="fas fa-times"></i> Tidak Hadir
+                        </button>
+                        <button class="attendance-btn late-btn ${student.attendance === 'late' ? 'active' : ''}" 
+                                data-id="${student.id}" data-status="late">
+                            <i class="fas fa-clock"></i> Terlambat
+                        </button>
+                    </div>
+                `;
+                
+                studentsList.appendChild(studentCard);
+            });
+            
+            // Add event listeners to attendance buttons
+            document.querySelectorAll('.attendance-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const studentId = parseInt(this.getAttribute('data-id'));
+                    const status = this.getAttribute('data-status');
+                    
+                    // Update student attendance
+                    const student = students.find(s => s.id === studentId);
+                    if (student) {
+                        student.attendance = status;
+                    }
+                    
+                    // Update UI
+                    renderStudents(document.getElementById('search-student').value);
+                    updateStats();
+                });
+            });
+            
+            // Update count display
+            const studentCount = document.querySelector('.card-title h3');
+            if (studentCount) {
+                if (filterText) {
+                    studentCount.textContent = `Daftar Siswa (${filteredStudents.length} dari 37 Siswa)`;
+                } else {
+                    studentCount.textContent = `Daftar Siswa (37 Siswa)`;
+                }
+            }
+        }
+        
+        // Setup search functionality
+        function setupSearch() {
+            const searchInput = document.getElementById('search-student');
+            
+            searchInput.addEventListener('input', function() {
+                renderStudents(this.value);
+            });
+            
+            // Clear search when switching tabs
+            document.querySelectorAll('.tab[data-tab]').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    if (this.getAttribute('data-tab') !== 'attendance') {
+                        searchInput.value = '';
+                    }
+                });
+            });
+        }
+        
+        // Render jadwal pelajaran dengan kemampuan klik
+        function renderSchedule() {
+            for (const day in schedule) {
+                const scheduleGrid = document.querySelector(`#${day}-schedule .schedule-grid`);
+                if (scheduleGrid) {
+                    scheduleGrid.innerHTML = '';
+                    
+                    schedule[day].forEach((item, index) => {
+                        const scheduleItem = document.createElement('div');
+                        scheduleItem.className = 'schedule-item clickable';
+                        scheduleItem.dataset.day = day;
+                        scheduleItem.dataset.index = index;
+                        
+                        // Set border color based on subject type
+                        if (item.subject.includes('Istirahat')) {
+                            scheduleItem.style.borderLeftColor = '#ffb300';
+                        } else if (item.subject.includes('Upacara') || item.subject.includes('Kegiatan')) {
+                            scheduleItem.style.borderLeftColor = '#f72585';
+                        } else {
+                            scheduleItem.style.borderLeftColor = '#4cc9f0';
+                        }
+                        
+                        scheduleItem.innerHTML = `
+                            <div class="schedule-time">
+                                <i class="far fa-clock"></i> ${item.time}
+                            </div>
+                            <div class="schedule-subject">${item.subject}</div>
+                            <div class="schedule-teacher">
+                                <i class="fas fa-chalkboard-teacher"></i> ${item.teacher || '-'}
+                            </div>
+                        `;
+                        
+                        // Add click event to show schedule details
+                        scheduleItem.addEventListener('click', function() {
+                            showScheduleDetails(day, index);
+                        });
+                        
+                        scheduleGrid.appendChild(scheduleItem);
+                    });
+                }
+            }
+        }
+        
+        // Render data pengajar
+        function renderTeachers() {
+            const teachersList = document.getElementById('teachers-list');
+            if (teachersList) {
+                teachersList.className = 'schedule-grid';
+                
+                teachers.forEach(teacher => {
+                    const teacherCard = document.createElement('div');
+                    teacherCard.className = 'schedule-item';
+                    teacherCard.style.borderLeftColor = '#4361ee';
+                    teacherCard.style.cursor = 'default';
+                    
+                    teacherCard.innerHTML = `
+                        <div class="schedule-subject">${teacher.subject}</div>
+                        <div class="schedule-teacher">
+                            <i class="fas fa-user-tie"></i> ${teacher.name}
+                        </div>
+                    `;
+                    
+                    teachersList.appendChild(teacherCard);
+                });
+            }
+        }
+        
+        // Setup tab navigation
+        function setupTabs() {
+            document.querySelectorAll('.tab[data-tab]').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const tabId = this.getAttribute('data-tab');
+                    
+                    // Remove active class from all tabs and tab contents
+                    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                    document.querySelectorAll('.tab-content').forEach(tc => tc.classList.remove('active'));
+                    
+                    // Add active class to clicked tab and corresponding content
+                    this.classList.add('active');
+                    document.getElementById(`${tabId}-tab`).classList.add('active');
+                    
+                    // Update stats when stats tab is opened
+                    if (tabId === 'stats') {
+                        updateStats();
+                    }
+                    
+                    // Update active nav button when schedule tab is opened
+                    if (tabId === 'schedule') {
+                        updateActiveNavButton();
+                    }
+                });
+            });
+        }
+        
+        // Setup schedule navigation
+        function setupScheduleNavigation() {
+            // Quick navigation buttons
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const day = this.getAttribute('data-day');
+                    
+                    // Remove active class from all nav buttons
+                    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+                    
+                    // Remove active class from all schedule days
+                    document.querySelectorAll('.day-schedule').forEach(d => d.classList.remove('active'));
+                    
+                    // Add active class to clicked button and corresponding schedule
+                    this.classList.add('active');
+                    document.getElementById(`${day}-schedule`).classList.add('active');
+                    
+                    // Update currentDay
+                    currentDay = day;
+                });
+            });
+            
+            // Quick schedule button in attendance tab
+            document.getElementById('quick-schedule').addEventListener('click', function() {
+                // Switch to schedule tab
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(tc => tc.classList.remove('active'));
+                
+                document.querySelector('.tab[data-tab="schedule"]').classList.add('active');
+                document.getElementById('schedule-tab').classList.add('active');
+                
+                // Update active nav button
+                updateActiveNavButton();
+            });
+        }
+        
+        // Update active navigation button based on current day
+        function updateActiveNavButton() {
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.getAttribute('data-day') === currentDay) {
+                    btn.classList.add('active');
+                }
+            });
+            
+            // Show schedule for current day
+            document.querySelectorAll('.day-schedule').forEach(day => {
+                day.classList.remove('active');
+                if (day.id === `${currentDay}-schedule`) {
+                    day.classList.add('active');
+                }
+            });
+        }
+        
+        // Setup attendance controls
+        function setupAttendanceControls() {
+            // Mark all present
+            document.getElementById('mark-all-present').addEventListener('click', function() {
+                students.forEach(student => {
+                    student.attendance = 'present';
+                });
+                renderStudents(document.getElementById('search-student').value);
+                updateStats();
+            });
+            
+            // Mark all absent
+            document.getElementById('mark-all-absent').addEventListener('click', function() {
+                students.forEach(student => {
+                    student.attendance = 'absent';
+                });
+                renderStudents(document.getElementById('search-student').value);
+                updateStats();
+            });
+            
+            // Save attendance
+            document.getElementById('save-attendance').addEventListener('click', function() {
+                const presentCount = students.filter(s => s.attendance === 'present').length;
+                const absentCount = students.filter(s => s.attendance === 'absent').length;
+                const lateCount = students.filter(s => s.attendance === 'late').length;
+                
+                // Save to localStorage
+                const saveData = {
+                    date: new Date().toLocaleDateString(),
+                    time: new Date().toLocaleTimeString(),
+                    attendance: students,
+                    stats: { presentCount, absentCount, lateCount },
+                    subject: document.getElementById('current-subject-name').textContent,
+                    teacher: document.getElementById('current-teacher-name').textContent.replace('Pengajar: ', '')
+                };
+                
+                localStorage.setItem('lastAttendanceSave', JSON.stringify(saveData));
+                localStorage.setItem('attendanceData', JSON.stringify(students));
+                
+                // Update history
+                const historyText = document.getElementById('history-text');
+                historyText.innerHTML = `
+                    <strong>Absensi terakhir disimpan:</strong> ${new Date().toLocaleString()}<br>
+                    <strong>Mata Pelajaran:</strong> ${saveData.subject}<br>
+                    <strong>Pengajar:</strong> ${saveData.teacher || 'Tidak ada'}<br>
+                    <strong>Rincian:</strong> ${presentCount} Hadir, ${absentCount} Tidak Hadir, ${lateCount} Terlambat
+                `;
+                
+                // Show success message
+                alert(`Absensi berhasil disimpan!\n\nMata Pelajaran: ${saveData.subject}\nHadir: ${presentCount} siswa\nTidak Hadir: ${absentCount} siswa\nTerlambat: ${lateCount} siswa`);
+            });
+            
+            // Reset attendance
+            document.getElementById('reset-attendance').addEventListener('click', function() {
+                if (confirm('Apakah Anda yakin ingin mereset semua absensi?')) {
+                    students.forEach(student => {
+                        student.attendance = null;
+                    });
+                    renderStudents(document.getElementById('search-student').value);
+                    updateStats();
+                }
+            });
+        }
+        
+        // Setup modal
+        function setupModal() {
+            const modal = document.getElementById('scheduleModal');
+            const closeBtn = document.getElementById('closeModal');
+            
+            // Close modal when clicking close button
+            closeBtn.addEventListener('click', function() {
+                modal.style.display = 'none';
+            });
+            
+            // Close modal when clicking outside modal content
+            window.addEventListener('click', function(event) {
+                if (event.target === modal) {
+                    modal.style.display = 'none';
+                }
+            });
+        }
+        
+        // Show schedule details in modal
+        function showScheduleDetails(day, index) {
+            const scheduleItem = schedule[day][index];
+            const modal = document.getElementById('scheduleModal');
+            const modalTitle = document.getElementById('modalScheduleTitle');
+            const modalContent = document.getElementById('modalScheduleContent');
+            
+            // Set modal title
+            modalTitle.textContent = scheduleItem.subject;
+            
+            // Prepare modal content
+            let contentHTML = `
+                <div class="schedule-detail-item">
+                    <div class="schedule-detail-label">Hari</div>
+                    <div class="schedule-detail-value">${day.charAt(0).toUpperCase() + day.slice(1)}</div>
+                </div>
+                <div class="schedule-detail-item">
+                    <div class="schedule-detail-label">Waktu</div>
+                    <div class="schedule-detail-value">${scheduleItem.time}</div>
+                </div>
+                <div class="schedule-detail-item">
+                    <div class="schedule-detail-label">Mata Pelajaran</div>
+                    <div class="schedule-detail-value">${scheduleItem.subject}</div>
+                </div>
+            `;
+            
+            if (scheduleItem.teacher) {
+                contentHTML += `
+                    <div class="schedule-detail-item">
+                        <div class="schedule-detail-label">Pengajar</div>
+                        <div class="schedule-detail-value">${scheduleItem.teacher}</div>
+                    </div>
+                `;
+            }
+            
+            // Add action buttons
+            contentHTML += `
+                <div style="margin-top: 25px; display: flex; gap: 15px;">
+                    <button class="control-btn btn-primary" id="useForAttendance">
+                        <i class="fas fa-check-circle"></i> Gunakan untuk Absensi
+                    </button>
+                    <button class="control-btn btn-light" id="closeModalBtn">
+                        <i class="fas fa-times"></i> Tutup
+                    </button>
+                </div>
+            `;
+            
+            modalContent.innerHTML = contentHTML;
+            
+            // Show modal
+            modal.style.display = 'flex';
+            
+            // Add event listener for "Use for Attendance" button
+            document.getElementById('useForAttendance').addEventListener('click', function() {
+                // Update current subject display
+                document.getElementById('current-subject-name').textContent = scheduleItem.subject;
+                document.getElementById('current-teacher-name').textContent = scheduleItem.teacher ? `Pengajar: ${scheduleItem.teacher}` : "Tidak ada pengajar";
+                document.getElementById('current-time').textContent = scheduleItem.time;
+                
+                // Switch to attendance tab
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(tc => tc.classList.remove('active'));
+                
+                document.querySelector('.tab[data-tab="attendance"]').classList.add('active');
+                document.getElementById('attendance-tab').classList.add('active');
+                
+                // Close modal
+                modal.style.display = 'none';
+                
+                // Show confirmation message
+                alert(`Mata pelajaran "${scheduleItem.subject}" telah dipilih untuk absensi. Silahkan mulai mengisi absensi siswa.`);
+            });
+            
+            // Add event listener for close button
+            document.getElementById('closeModalBtn').addEventListener('click', function() {
+                modal.style.display = 'none';
+            });
+        }
+        
+        // Update statistics
+        function updateStats() {
+            const presentCount = students.filter(s => s.attendance === 'present').length;
+            const absentCount = students.filter(s => s.attendance === 'absent').length;
+            const lateCount = students.filter(s => s.attendance === 'late').length;
+            
+            document.getElementById('present-count').textContent = presentCount;
+            document.getElementById('absent-count').textContent = absentCount;
+            document.getElementById('late-count').textContent = lateCount;
+        }
+        
+        // Load saved attendance data
+        function loadSavedAttendance() {
+            const savedData = localStorage.getItem('attendanceData');
+            if (savedData) {
+                try {
+                    const savedStudents = JSON.parse(savedData);
+                    
+                    // Update student attendance
+                    savedStudents.forEach(savedStudent => {
+                        const student = students.find(s => s.id === savedStudent.id);
+                        if (student) {
+                            student.attendance = savedStudent.attendance;
+                        }
+                    });
+                    
+                    // Update UI
+                    renderStudents();
+                    updateStats();
+                    
+                    // Update history
+                    const lastSave = localStorage.getItem('lastAttendanceSave');
+                    if (lastSave) {
+                        try {
+                            const saveInfo = JSON.parse(lastSave);
+                            const historyText = document.getElementById('history-text');
+                            historyText.innerHTML = `
+                                <strong>Absensi terakhir disimpan:</strong> ${saveInfo.date} ${saveInfo.time}<br>
+                                <strong>Mata Pelajaran:</strong> ${saveInfo.subject || 'Tidak diketahui'}<br>
+                                <strong>Pengajar:</strong> ${saveInfo.teacher || 'Tidak ada'}<br>
+                                <strong>Rincian:</strong> ${saveInfo.stats.presentCount} Hadir, ${saveInfo.stats.absentCount} Tidak Hadir, ${saveInfo.stats.lateCount} Terlambat
+                            `;
+                        } catch (e) {
+                            console.log("Error parsing last save info");
+                        }
+                    }
+                } catch (e) {
+                    console.log("Error loading saved attendance data");
+                }
+            }
+        }
+    </script>
+</body>
+</html>
